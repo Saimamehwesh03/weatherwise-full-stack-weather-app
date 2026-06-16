@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WeatherWise Full Stack Assessment</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Full Stack Weather Assessment</p>
+        <h1>WeatherWise</h1>
+      </div>
+      <div class="identity" aria-label="Candidate and organization">
+        <span>Saima Mehwesh Syeda</span>
+        <span>PM Accelerator</span>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="panel query-panel" aria-labelledby="search-title">
+        <div class="section-title">
+          <h2 id="search-title">Weather Request</h2>
+          <span class="status-pill" id="api-status">Ready</span>
+        </div>
+
+        <form id="weather-form" class="weather-form">
+          <label class="field span-2">
+            <span>Location</span>
+            <input
+              id="location"
+              name="location"
+              type="text"
+              autocomplete="postal-code"
+              placeholder="City, ZIP, landmark, or 29.7604,-95.3698"
+              required
+            />
+          </label>
+
+          <label class="field">
+            <span>Start</span>
+            <input id="start-date" name="startDate" type="date" required />
+          </label>
+
+          <label class="field">
+            <span>End</span>
+            <input id="end-date" name="endDate" type="date" required />
+          </label>
+
+          <label class="field span-2">
+            <span>Notes</span>
+            <input id="notes" name="notes" type="text" placeholder="Trip, commute, event, or reminder" />
+          </label>
+
+          <fieldset class="unit-switch" aria-label="Units">
+            <legend>Units</legend>
+            <label>
+              <input type="radio" name="unitSystem" value="imperial" checked />
+              <span>F / mph</span>
+            </label>
+            <label>
+              <input type="radio" name="unitSystem" value="metric" />
+              <span>C / kmh</span>
+            </label>
+          </fieldset>
+
+          <div class="form-actions span-2">
+            <button class="secondary" type="button" id="current-location-button" title="Use current location">
+              <span aria-hidden="true">⌖</span>
+              Current
+            </button>
+            <button class="primary" type="submit" id="save-button">
+              <span aria-hidden="true">＋</span>
+              Search & Save
+            </button>
+          </div>
+        </form>
+
+        <div id="alert" class="alert" role="status" aria-live="polite" hidden></div>
+      </section>
+
+      <section class="panel current-panel" aria-labelledby="current-title">
+        <div class="section-title">
+          <h2 id="current-title">Current Weather</h2>
+          <span id="last-updated" class="muted">No request yet</span>
+        </div>
+        <div id="current-weather" class="current-weather empty-state">
+          <div class="weather-mark" aria-hidden="true">◎</div>
+          <div>
+            <p class="muted">Saved weather appears here.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel forecast-panel" aria-labelledby="forecast-title">
+        <div class="section-title">
+          <h2 id="forecast-title">5-Day Forecast</h2>
+        </div>
+        <div id="forecast-grid" class="forecast-grid"></div>
+      </section>
+
+      <section class="panel range-panel" aria-labelledby="range-title">
+        <div class="section-title">
+          <h2 id="range-title">Date Range</h2>
+        </div>
+        <div id="range-table" class="range-table"></div>
+      </section>
+
+      <section class="panel map-panel" aria-labelledby="map-title">
+        <div class="section-title">
+          <h2 id="map-title">Map</h2>
+          <a id="map-link" class="text-link" href="#" target="_blank" rel="noreferrer" hidden>Open</a>
+        </div>
+        <iframe id="map-frame" title="Location map" loading="lazy"></iframe>
+      </section>
+
+      <section class="panel history-panel" aria-labelledby="history-title">
+        <div class="section-title">
+          <h2 id="history-title">Saved Requests</h2>
+          <div class="export-actions" aria-label="Export records">
+            <button type="button" data-export="json" title="Export JSON">JSON</button>
+            <button type="button" data-export="csv" title="Export CSV">CSV</button>
+            <button type="button" data-export="markdown" title="Export Markdown">MD</button>
+          </div>
+        </div>
+        <div id="history-list" class="history-list"></div>
+      </section>
+
+      <section class="panel pma-panel" aria-labelledby="pma-title">
+        <div class="section-title">
+          <h2 id="pma-title">PM Accelerator</h2>
+        </div>
+        <p>
+          Product Manager Accelerator supports aspiring and current product managers with PM training,
+          career coaching, resume support, and AI product education.
+        </p>
+      </section>
+    </main>
+
+    <dialog id="edit-dialog" class="edit-dialog">
+      <form id="edit-form" method="dialog">
+        <div class="section-title">
+          <h2>Edit Request</h2>
+          <button type="button" class="icon-button" id="close-edit" title="Close">×</button>
+        </div>
+        <input type="hidden" id="edit-id" />
+        <label class="field">
+          <span>Location</span>
+          <input id="edit-location" type="text" required />
+        </label>
+        <div class="edit-grid">
+          <label class="field">
+            <span>Start</span>
+            <input id="edit-start-date" type="date" required />
+          </label>
+          <label class="field">
+            <span>End</span>
+            <input id="edit-end-date" type="date" required />
+          </label>
+        </div>
+        <label class="field">
+          <span>Notes</span>
+          <input id="edit-notes" type="text" />
+        </label>
+        <fieldset class="unit-switch" aria-label="Edit units">
+          <legend>Units</legend>
+          <label>
+            <input type="radio" name="editUnitSystem" value="imperial" />
+            <span>F / mph</span>
+          </label>
+          <label>
+            <input type="radio" name="editUnitSystem" value="metric" />
+            <span>C / kmh</span>
+          </label>
+        </fieldset>
+        <div class="form-actions">
+          <button class="secondary" type="button" id="cancel-edit">Cancel</button>
+          <button class="primary" type="submit">Update</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
