@@ -83,15 +83,6 @@ Example create payload:
 }
 ```
 
-## Demo Video Outline
-
-1. Start the app and open the local URL.
-2. Search for a city or landmark and save the request.
-3. Show current weather, 5-day forecast, date-range table, AQI, and map.
-4. Use current location.
-5. Edit a saved record, then delete one.
-6. Export JSON, CSV, or Markdown.
-7. Briefly show `app.py`, `public/app.js`, and the SQLite/CRUD endpoints.
 
 ## PM Accelerator Note
 
